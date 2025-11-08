@@ -1,0 +1,537 @@
+/* Blog Comment System CSS */
+/* Clean, responsive design for comments and forms */
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Comment Form Container */
+.comment-form-container {
+    background: #fff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment-form-container h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fff;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input[type="text"]:disabled,
+.form-group textarea:disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    max-height: 400px;
+}
+
+/* Form Help Text */
+.form-help {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+#char-count {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+#char-count {
+    color: #6b7280;
+}
+
+/* Submit Button */
+.submit-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    min-width: 120px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.submit-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading State */
+.btn-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-loading::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Form Messages */
+.form-message {
+    padding: 12px 16px;
+    margin-top: 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-left: 4px solid;
+}
+
+.form-message.success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-left-color: #22c55e;
+}
+
+.form-message.error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left-color: #ef4444;
+}
+
+/* Comments Container */
+.comments-container {
+    margin-top: 32px;
+}
+
+.comments-container h3 {
+    margin: 0 0 24px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#comment-count {
+    background-color: #e5e7eb;
+    color: #374151;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.loading .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px auto;
+}
+
+.loading p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Error Message in Loading */
+.error-message {
+    text-align: center;
+    padding: 20px;
+}
+
+.retry-btn {
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.retry-btn:hover {
+    background-color: #4b5563;
+}
+
+/* Comments List */
+#comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Individual Comment */
+.comment {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    animation: slideIn 0.3s ease-out;
+}
+
+.comment:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+/* Comment Animation States */
+.comment.new {
+    animation: slideInBounce 0.5s ease-out;
+}
+
+.comment.loaded {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    50% {
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Comment Header */
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.comment-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+    white-space: nowrap;
+    cursor: help;
+}
+
+/* Comment Content */
+.comment-content {
+    color: #374151;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.comment-content p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* No Comments State */
+.no-comments {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.no-comments p {
+    margin: 0;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .comment-form-container {
+        padding: 20px 16px;
+        margin-bottom: 24px;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .comment-date {
+        font-size: 0.8rem;
+    }
+
+    .comments-container {
+        margin-top: 24px;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        padding: 10px 12px;
+    }
+
+    .submit-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .comment-form-container {
+        padding: 16px 12px;
+    }
+
+    .comment {
+        padding: 16px;
+    }
+
+    .comment-form-container h3,
+    .comments-container h3 {
+        font-size: 1.1rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-help {
+        font-size: 0.8rem;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .comment-form-container,
+    .comment {
+        border-width: 2px;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+        border-width: 3px;
+    }
+
+    .submit-btn {
+        border: 2px solid transparent;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .btn-loading::before {
+        animation: none;
+    }
+
+    .btn-loading::before {
+        content: '⏳';
+        width: auto;
+        height: auto;
+        border: none;
+        border-radius: 0;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #111827;
+        color: #f9fafb;
+    }
+
+    .comment-form-container,
+    .comment {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+    }
+
+    .comment-form-container h3,
+    .comments-container h3,
+    .comment-author {
+        color: #f9fafb;
+    }
+
+    .form-group label {
+        color: #d1d5db;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+
+    .form-group input[type="text"]:disabled,
+    .form-group textarea:disabled {
+        background-color: #374151;
+        color: #9ca3af;
+    }
+
+    .comment-content {
+        color: #d1d5db;
+    }
+
+    .no-comments {
+        color: #9ca3af;
+    }
+
+    .loading {
+        color: #9ca3af;
+    }
+
+    .loading .spinner {
+        border-color: #374151;
+        border-top-color: #60a5fa;
+    }
+
+    #comment-count {
+        background-color: #374151;
+        color: #d1d5db;
+    }
+
+    .form-help,
+    .comment-date {
+        color: #9ca3af;
+    }
+
+    .form-message.success {
+        background-color: #064e3b;
+        color: #6ee7b7;
+        border-left-color: #10b981;
+    }
+
+    .form-message.error {
+        background-color: #7f1d1d;
+        color: #fca5a5;
+        border-left-color: #ef4444;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .comment-form-container,
+    .loading,
+    .no-comments {
+        display: none;
+    }
+
+    .comment {
+        break-inside: avoid;
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
+
+    .comment-date {
+        font-size: 0.8rem;
+        color: #666;
+    }
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Comment System</title>
+    <link rel="stylesheet" href="comment-system.css">
+</head>
+<body>
+    <!-- Comment Form Container -->
+    <div id="comment-form-container" class="comment-form-container">
+        <h3>Leave a Comment</h3>
+        <form id="comment-form">
+            <div class="form-group">
+                <label for="author-name">Name:</label>
+                <input type="text" id="author-name" name="author_name" required maxlength="100">
+                <small class="form-help">Your name as it will appear on the comment</small>
+            </div>
+            <div class="form-group">
+                <label for="comment-content">Comment:</label>
+                <textarea id="comment-content" name="comment_content" required maxlength="1000" rows="4"></textarea>
+                <small class="form-help">
+                    <span id="char-count">0</span>/1000 characters
+                </small>
+            </div>
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span class="btn-text">Post Comment</span>
+                <span class="btn-loading" style="display: none;">Posting...</span>
+            </button>
+        </form>
+        <div id="form-message" class="form-message" style="display: none;"></div>
+    </div>
+
+    <!-- Comments Display Container -->
+    <div id="comments-container" class="comments-container">
+        <h3>Comments (<span id="comment-count">0</span>)</h3>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading comments...</p>
+        </div>
+        <div id="comments-list" style="display: none;"></div>
+        <div id="no-comments" class="no-comments" style="display: none;">
+            <p>No comments yet. Be the first to comment!</p>
+        </div>
+    </div>
+
+    <!-- Include the JavaScript -->
+    <script src="comment-system.js"></script>
+</body>
+</html>
