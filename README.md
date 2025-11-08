@@ -1,6 +1,7 @@
 # Blog Comment System
 
 A complete, self-hosted comment system built with Cloudflare Workers and D1 database. Perfect for static blogs, Jekyll sites, Hugo sites, or any website that needs comment functionality without relying on third-party services.
+Made with ❤️ by Compyle Agent and Kurippusu-kun  feel free to use this  and star this repo 😄 
 
 ## Features
 
@@ -403,5 +404,3 @@ For issues and questions:
 3. Open an issue in the repository
 
 ---
-
-**Built with ❤️ using Cloudflare Workers and D1**
