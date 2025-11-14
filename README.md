@@ -1,18 +1,136 @@
 # Blog Comment System
 
 A complete, self-hosted comment system built with Cloudflare Workers and D1 database. Perfect for static blogs, Jekyll sites, Hugo sites, or any website that needs comment functionality without relying on third-party services.
-Made with ❤️ by Compyle Agent and Kurippusu-kun  feel free to use this  and star this repo 😄 
 
 ## Features
 
 - ✅ **Comment submission** with real-time display
 - ✅ **Admin interface** for comment moderation and deletion
 - ✅ **Cloudflare D1 database** for reliable, fast storage
+- ✅ **KV-based admin secret management** with web-based setup
+- ✅ **Mobile-friendly configuration** - no PC required
 - ✅ **CORS-enabled** for integration with any website
 - ✅ **Responsive design** that works on all devices
 - ✅ **Security features** including XSS protection and input validation
 - ✅ **Easy embedding** with simple HTML/JS integration
 - ✅ **No external dependencies** - completely self-hosted
+
+## 🆕 Latest Updates: KV-Based Admin Secret Management
+
+### Overview
+The comment system now uses Cloudflare KV for secure admin secret storage, providing a mobile-friendly setup experience without requiring PC access or command-line tools.
+
+### Key Improvements
+
+**🌐 Web-Based Setup Interface**
+- **Setup URL**: `https://your-worker.workers.dev/setup`
+- **Mobile-responsive** design that works perfectly on phones and tablets
+- **Secure form validation** with minimum 8-character requirement
+- **Current secret verification** for safe secret changes
+- **No wrangler CLI required** - complete setup through web browser
+
+**🔐 Enhanced Security**
+- **KV storage** in Cloudflare's secure global infrastructure
+- **No hardcoded secrets** in the codebase
+- **Easy secret rotation** without needing redeployment
+- **Fallback support** to environment variables if KV is not configured
+- **Global distribution** for fast access from anywhere
+
+**📱 Mobile-Friendly Benefits**
+- **Setup from anywhere** - works on any device with web browser
+- **Responsive design** with touch-friendly interface
+- **Progressive enhancement** - works even with limited connectivity
+- **Accessible interface** with proper focus management and screen reader support
+
+### New API Endpoints
+
+**POST /setup**
+```json
+{
+    "currentSecret": "existing-secret (optional)",
+    "newSecret": "new-secure-secret (min 8 chars)"
+}
+```
+
+**Response:**
+```json
+{
+    "success": true,
+    "message": "Admin secret updated successfully",
+    "adminUrl": "https://your-worker.workers.dev/admin?secret=your-new-secret"
+}
+```
+
+**GET /setup**
+Provides a complete web interface for secret configuration.
+
+### Setup Process
+
+**For New Installations:**
+1. Deploy the Worker to Cloudflare
+2. Create KV namespace: `wrangler kv:namespace create "SECRETS"`
+3. Update `wrangler.toml` with KV namespace ID
+4. Visit `https://your-worker.workers.dev/setup`
+5. Enter your desired admin secret (min 8 characters)
+6. Confirm and submit
+
+**To Change Existing Secret:**
+1. Visit `https://your-worker.workers.dev/setup`
+2. Enter current admin secret
+3. Enter new admin secret (min 8 characters)
+4. Confirm new secret
+5. Submit the form
+
+### Backward Compatibility
+
+The system maintains full backward compatibility:
+- **Environment variables** still work as before
+- **Fallback mechanism** automatically uses `ADMIN_SECRET_KEY` if KV is not configured
+- **Existing deployments** continue to work without changes
+- **Gradual migration** possible - KV can be added later
+
+### Configuration Changes
+
+**Updated wrangler.toml:**
+```toml
+[[kv_namespaces]]
+binding = "SECRETS"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+```
+
+**Environment Variables (Optional):**
+- `ADMIN_SECRET_KEY`: Fallback admin secret (only used if KV is not configured)
+
+### Security Architecture
+
+**Secret Storage Priority:**
+1. **First**: Cloudflare KV storage (`ADMIN_SECRET_KEY` key)
+2. **Second**: Environment variable `ADMIN_SECRET_KEY`
+3. **Third**: Default fallback `blog-admin-2024` (development only)
+
+**Validation Rules:**
+- Minimum 8 characters for new secrets
+- Current secret verification for changes
+- XSS protection on all inputs
+- SQL injection prevention with parameterized queries
+- CORS protection for API endpoints
+
+### Migration Guide
+
+**From Environment Variables to KV:**
+1. Deploy with existing `ADMIN_SECRET_KEY` environment variable
+2. Create KV namespace and update `wrangler.toml`
+3. Deploy again
+4. Visit `/setup` and set the same secret in KV
+5. Remove environment variable (optional)
+6. Deploy final version
+
+**Benefits of Migration:**
+- Easier secret management from mobile devices
+- No need for wrangler CLI access
+- Global distribution and better performance
+- Enhanced security with Cloudflare's infrastructure
 
 ## Quick Start
 
@@ -61,27 +179,50 @@ database_id = "your-actual-database-id-here"  # Replace this
 wrangler d1 execute blog-comments-db --file=schema.sql
 ```
 
-### 5. Set Environment Variables
+### 5. Create KV Namespace
+
+```bash
+# Create KV namespace for storing admin secrets
+wrangler kv:namespace create "SECRETS"
+```
+
+Note the KV namespace ID from the output and update `wrangler.toml`:
+```toml
+[[kv_namespaces]]
+binding = "SECRETS"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+```
+
+### 6. Set Up Admin Secret (Recommended Method)
+
+Visit your Worker URL and navigate to the setup page:
+```
+https://blog-comments.your-subdomain.workers.dev/setup
+```
+
+This will provide a secure web interface to set your admin secret using KV storage.
+
+### 7. Alternative: Set Environment Variable
 
 ```bash
 # Set your admin secret key (choose a secure random string)
 wrangler secret put ADMIN_SECRET_KEY
 ```
 
-When prompted, enter a secure secret (e.g., `your-secure-admin-secret-123`).
-
-### 6. Deploy
+### 8. Deploy
 
 ```bash
 # Deploy to Cloudflare Workers
 wrangler deploy
 ```
 
-### 7. Integration
+### 9. Integration
 
 Your comment system is now live! Use these URLs:
 
 - **Worker URL**: `https://blog-comments.your-subdomain.workers.dev`
+- **Setup Page**: `https://blog-comments.your-subdomain.workers.dev/setup`
 - **Admin Interface**: `https://blog-comments.your-subdomain.workers.dev/admin?secret=YOUR_ADMIN_SECRET_KEY`
 
 ## Integration Guide
@@ -153,7 +294,19 @@ For more control, include the assets directly on your pages:
 
 ### Environment Variables
 
-- `ADMIN_SECRET_KEY`: Secret key for accessing admin interface (required)
+- `ADMIN_SECRET_KEY`: Secret key for accessing admin interface (optional, can be set via KV)
+
+### KV Storage (Recommended)
+
+The system uses Cloudflare KV to store the admin secret securely:
+
+- **Benefits**:
+  - No need to use wrangler CLI for secret management
+  - Secure web-based setup interface
+  - Easy secret rotation without redeployment
+  - Global distribution for fast access
+- **Setup URL**: `https://your-worker.workers.dev/setup`
+- **Storage Key**: `ADMIN_SECRET_KEY`
 
 ### Customization
 
@@ -248,6 +401,31 @@ Delete a comment (admin only).
     "message": "Comment deleted successfully"
 }
 ```
+
+### POST /setup
+
+Set or update the admin secret in KV storage.
+
+**Request Body:**
+```json
+{
+    "currentSecret": "current-admin-secret (optional)",
+    "newSecret": "your-new-secure-secret"
+}
+```
+
+**Response:**
+```json
+{
+    "success": true,
+    "message": "Admin secret updated successfully",
+    "adminUrl": "https://your-worker.workers.dev/admin?secret=your-new-secure-secret"
+}
+```
+
+### GET /setup
+
+Access the admin setup web interface for secure secret configuration.
 
 ## Admin Interface
 
@@ -404,3 +582,79 @@ For issues and questions:
 3. Open an issue in the repository
 
 ---
+
+**Built with ❤️ using Cloudflare Workers and D1**
+
+## 📋 Changelog
+
+### v2.0.0 - KV-Based Admin Secret Management
+**Released: November 2024**
+
+#### 🆕 New Features
+- **Web-based admin setup interface** at `/setup`
+- **Cloudflare KV storage** for admin secrets
+- **Mobile-friendly configuration** - no PC required
+- **Secure secret rotation** without redeployment
+- **Responsive setup interface** with validation
+
+#### 🔧 Technical Changes
+- Added KV namespace binding in `wrangler.toml`
+- Implemented `getAdminSecret()` and `setAdminSecret()` functions
+- Created `/setup` GET/POST endpoints
+- Updated admin authentication to use KV storage
+- Added comprehensive error handling and validation
+
+#### 📱 Mobile Benefits
+- Complete setup possible from mobile browser
+- Touch-friendly interface with proper focus management
+- Responsive design that works on all screen sizes
+- No need for wrangler CLI or command-line tools
+
+#### 🔐 Security Improvements
+- No hardcoded secrets in codebase
+- Secure KV storage in Cloudflare's global infrastructure
+- Minimum 8-character requirement for admin secrets
+- Current secret verification for safe changes
+- Fallback to environment variables for backward compatibility
+
+#### 🔄 Migration Features
+- **Backward compatibility** - existing deployments continue to work
+- **Gradual migration** path from environment variables to KV
+- **Fallback mechanism** automatically checks KV first, then env vars
+- **Zero-downtime** secret rotation capability
+
+#### 📚 Documentation Updates
+- Comprehensive setup guide for KV configuration
+- Mobile-friendly installation instructions
+- Detailed API documentation for new endpoints
+- Migration guide from environment variables
+- Security architecture documentation
+
+### v1.0.0 - Initial Release
+**Released: November 2024**
+
+#### ✅ Core Features
+- Complete comment system with CRUD operations
+- Cloudflare D1 database integration
+- Responsive HTML/CSS/JS frontend
+- Admin interface for comment moderation
+- Real-time comment submission and display
+- CORS support for cross-origin requests
+- Security features (XSS protection, input validation)
+- Multiple integration methods (iframe, direct HTML)
+
+#### 🛠 Technical Foundation
+- Cloudflare Workers runtime
+- D1 database with optimized indexes
+- RESTful API design
+- Modern JavaScript with async/await
+- Mobile-responsive CSS with accessibility support
+- Comprehensive error handling
+- Production-ready configuration
+
+#### 📖 Documentation
+- Complete setup and deployment guide
+- API documentation with examples
+- Integration instructions for various platforms
+- Troubleshooting guide
+- Performance optimization tips
